@@ -142,3 +142,9 @@ E --> G(use config)
 F --> G
 G --> Z((return))
 ```
+
+Need to be done next: 
+- [x] read files of config
+- [x] read arguments on command lines 
+- [x] read parameters on command lines 
+- [ ] read command args and parameters 
