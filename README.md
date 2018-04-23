@@ -5,7 +5,7 @@
 This lib can be used to parse commands lines arguments or formatted config files for C/C++ projects.
 
 ## Usage
-Tree example:
+### Tree example:
 ```shell
 .
 ├── makefile
@@ -22,7 +22,7 @@ Tree example:
     └── main.c
 ```
 
-Code example:
+### Code example:
 ```C
 #include <stdio.h>
 
@@ -46,26 +46,26 @@ int main ( int argc, char *argv[] )
 	};
 
 	param_el param[] = { // cmd line args
-		{ 
+		{
 			.key = "-p1",
-			.nbEl = 1, 
-			.type = cT ( uint8_t ), 
-			.value = &param1, 
-			.help = "first argument" 
+			.nbEl = 1,
+			.type = cT ( uint8_t ),
+			.value = &param1,
+			.help = "first argument"
 		},
-		{ 
+		{
 			.key = "--param1",
-			.nbEl = 1, 
-			.type = cT ( uint8_t ), 
-			.value = &param1, 
-			.help = "first argument" 
+			.nbEl = 1,
+			.type = cT ( uint8_t ),
+			.value = &param1,
+			.help = "first argument"
 		},
 		{ "-p2", 1, cT ( str ), &param2, "second argument" },
 		{ "--param2", 1, cT ( str ), &param2, "second argument" },
 		{ "-p3", 10,  cT ( uint8_t ),  &param3,  "third argument" },
 		{ "--param3", 10,  cT ( uint8_t ),  &param3,  "third argument" },
-		{ "-p4", 3,  cT ( str ),  &param4,  "fourth argument" },
-		{ "--param4", 3,  cT ( str ),  &param4,  "fourth argument" },
+		{ "-p4", 3,  cT ( str ),  &param4, NULL },
+		{ "--param4", 3,  cT ( str ),  &param4,  NULL },
 		{ NULL }
 	};
 
@@ -105,7 +105,7 @@ int main ( int argc, char *argv[] )
 }
 ```
 
-configFilePath example:
+### ConfigFilePath example:
 ```
 # param 1
 # default value:
@@ -118,57 +118,32 @@ PARAM_1=6
 PARAM_2=str
 ```
 
-Call example: using **readConfigFile()** only
+### Call example: using **readConfigFile()**, **readConfigArgs** and **readParamArgs()**
 ```
-$ ./exec
-
-1 - 6
-2 - str
-...
-```
-
-Call example: using **readConfigFile()** and **readConfigArgs()**
-```
-$ ./exec PARAM_2=test
-
-1 - 6
-2 - test
-...
-```
-
-Call example: using **readConfigFile()** and **readParamArgs()**
-```
-$ ./exec -p1 5 -p3 1 2 3 4 5 6 135 8 9
+$ ./exec PARAM_2=string_2 -p1 5 -p3 1 2 3 4 5 6 135 8 9 -p4 test test_2
 
 1 - 5
-2 - str
-3 - 0 - 1
-3 - 1 - 2
-3 - 2 - 3
-3 - 3 - 4
-3 - 4 - 5
-3 - 5 - 6
-3 - 6 - 135
-3 - 7 - 8
-3 - 8 - 9
-3 - 9 - 0
-...
-```
-
-Call example: using **readConfigFile()**, **readConfigArgs** and **readParamArgs()**
-```
-$  ./bin/exec PARAM_2=string_2 -p4 test test_2
-
-1 - 10
 2 - string_2
-...
+3 -
+    0 - 1
+    1 - 2
+    2 - 3
+    3 - 4
+    4 - 5
+    5 - 6
+    6 - 135
+    7 - 8
+    8 - 9
+    9 - 0
 4 -
     0 - test
     1 - test_2
     2 - (null)
 ```
 
-Be care with paramtters order: 
+## Advanced
+### Parameter order:
+Be care with paramtters order:
 ```
 $  ./bin/exec PARAM_2=string_2 -p4 test test_2
 1 - 10
@@ -182,32 +157,126 @@ $  ./bin/exec PARAM_2=string_2 -p4 test test_2
 is different than:
 ```
 $  ./bin/exec -p4 test test_2 PARAM_2=string_2
+
 1 - 10
 2 - string_2
 ...
 4 -
     0 - test
     1 - test_2
-    2 - PARAM_2
+    2 - PARAM_2=string_2
 ```
 
+### Spécial cmds:
+By default argument "`--`" stop parsing of arguments list, soo:
+```
+$ ./exec PARAM_2=string_2 -p1 5 -p3 1 2 3 -- 4 5 6 135 8 9 -p4 test test_2
 
-The last call overwrite the existing values:
-```mermaid
-graph TB
-A((main)) --> B(init)
-B --> C(readConfigFile)
-C --> D{OR}
-D --> E(readConfigArgs)
-D --> F(readParamArgs)
-E --> G(use config)
-F --> G
-G --> Z((return))
+1 - 5
+2 - string_2
+3 -
+    0 - 1
+    1 - 2
+    2 - 3
+    3 - 0
+    4 - 0
+    5 - 0
+    6 - 0
+    7 - 0
+    8 - 0
+    9 - 0
+4 -
+    0 - (null)
+    1 - (null)
+    2 - (null)
 ```
 
-Need to be done next: 
+You can change the default comportement by redefining "`--`" argument, two modes exists:
+1. set "`--`" as a valid element like everyone,
+2. set "`--`" as invalid element,
+
+```C
+param_el param[] = { // cmd line args
+		...
+		{ // first case
+			.key = "`--`",
+			.nbEl = 1,
+			.type = cT ( uint8_t ),
+			.value = &paramValue,
+			.help = "help data"
+		},
+		{ //second case
+			.key = "`--`",
+			.value = NULL,
+			.help = "stop parsing"
+		},
+		{ NULL }
+	};
+```
+
+The first case allow to use "`--`" like all other params, second case allow to use "`--`" to stop store data in the last specified data.
+```
+$ ./exec PARAM_2=string_2 -p1 5 -p3 1 2 3 -- 4 5 6 135 8 9 -p4 test test_2
+
+1 - 5
+2 - string_2
+3 -
+    0 - 1
+    1 - 2
+    2 - 3
+    3 - 0
+    4 - 0
+    5 - 0
+    6 - 0
+    7 - 0
+    8 - 0
+    9 - 0
+4 -
+    0 - test
+    1 - test_2
+    2 - (null)
+```
+
+### Help
+The helps functions will display:
+- for config ( *helpConfigArgs(config)* ):
+	- key : help
+	- key : type (if help pointer is null)
+- for param ( *helpParamArgs(param)* ):
+	- key : nbEl : help
+	- key : nbEl : type (if help pointer is null)
+
+Examples:
+```C
+helpConfigArgs ( config );
+```
+
+```
+    usage : key=value key2=value2
+             PARAM_1 : first parameter
+             PARAM_2 : second parameter
+```
+
+```C
+helpParamArgs ( param );
+```
+
+```
+    usage : key value value2 key2 value3 ...
+                 -p1 :  1 : first argument
+            --param1 :  1 : first argument
+                 -p2 :  1 : second argument
+            --param2 :  1 : second argument
+                 -p3 : 10 : third argument
+            --param3 : 10 : third argument
+                 -p4 :  3 : string
+            --param4 :  3 : string
+                  -- : stop parsing
+```
+
+Need to be done next:
 - [x] read files of config
-- [x] read arguments on command lines 
-- [x] read parameters on command lines 
-- [x] read command args and parameters 
+- [x] read arguments on command lines
+- [x] read parameters on command lines
+- [x] read command args and parameters
 - [x] use NULL pointer to get argument from command line

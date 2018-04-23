@@ -128,9 +128,9 @@ int readConfigArgs ( const int argc,  char * const argv[], config_el param[] )
 						break;
 					}
 				}
-				break;
 
 				argv[ numArg ][ index ] = '=';
+				break;
 			}
 		}
 		numArg++;
@@ -318,10 +318,6 @@ int helpParamArgs ( const param_el param[] )
 					break;
 				}
 			}
-			if ( param[  loopCounter ].nbEl > 1 )
-			{
-				printf( "[%d]", param[  loopCounter ].nbEl );
-			}
 			printf ( "\n" );
 		}
 	}
@@ -356,13 +352,24 @@ int readParamArgs ( const int argc, char * const argv[], param_el param[] )
 					break;
 				}
 			}
+
 			if ( param[ loopCounter ].key == NULL )
 			{ // invalid key
 				loopCounter = lastCounter;
+
+				if ( !strcmp ( argv[ numArg ], "--" ) )
+				{ // by default "--" stop parsing
+					return ( 0 );
+				}
 			}
 			else
 			{ // if we found a valid key we will test next arg
+				if ( param[ loopCounter ].value == NULL )
+				{ // if no have value pointer, not allow param test
+					paramId = -1;
+				}
 				numArg++;
+				continue;
 			}
 		}
 
@@ -376,10 +383,9 @@ int readParamArgs ( const int argc, char * const argv[], param_el param[] )
 		{
 			// we only get one param, next we will need to found a new key
 			paramId = -1;
-
+			
 			if ( param[ loopCounter ].value == NULL )
-			{
-				printf ( "param %s have null pointer\n", param[ loopCounter ].key );
+			{ // should never be occure
 				continue;
 			}
 
@@ -457,8 +463,7 @@ int readParamArgs ( const int argc, char * const argv[], param_el param[] )
 		else if ( paramId <  param[ loopCounter ].nbEl )
 		{
 			if ( param[ loopCounter ].value == NULL )
-			{
-				printf ( "param %s has null pointer\n", param[ loopCounter ].key );
+			{ // should never be occure
 				paramId = -1;
 				continue;
 			}
