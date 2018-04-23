@@ -334,17 +334,17 @@ int readParamArgs ( const int argc, char * const argv[], param_el param[] )
 	int numArg = 1;
 	int loopCounter = 0;
 	int lastCounter = 0;
-	int paramId;
+	int paramId = -1;
 
 	while ( numArg < argc )
 	{
 		if ( argv[ numArg ][ 0 ] == '-' )
-		{
+		{ // maybe it is a key
 			lastCounter = loopCounter;
 			for ( loopCounter = 0; param[ loopCounter ].key != NULL; loopCounter++ )
-			{
+			{ // verify exiting key
 				if ( !strcmp ( argv[ numArg ], param[ loopCounter ].key ) )
-				{
+				{ // key vaild
 					paramId = 0;
 					if ( param[ loopCounter ].type == CONFIG_TYPE_bool )
 					{
@@ -357,17 +357,26 @@ int readParamArgs ( const int argc, char * const argv[], param_el param[] )
 				}
 			}
 			if ( param[ loopCounter ].key == NULL )
-			{
+			{ // invalid key
 				loopCounter = lastCounter;
 			}
 			else
-			{
+			{ // if we found a valid key we will test next arg
 				numArg++;
 			}
 		}
 
+		if ( paramId == -1 )
+		{ // we haven't already found a key
+			numArg++;
+			continue;
+		}
+
 		if (  param[ loopCounter ].nbEl == 1 )
 		{
+			// we only get one param, next we will need to found a new key
+			paramId = -1;
+
 			if ( param[ loopCounter ].value == NULL )
 			{
 				printf ( "param %s has null pointer\n", param[ loopCounter ].key );
@@ -443,6 +452,7 @@ int readParamArgs ( const int argc, char * const argv[], param_el param[] )
 			if ( param[ loopCounter ].value == NULL )
 			{
 				printf ( "param %s has null pointer\n", param[ loopCounter ].key );
+				paramId = -1;
 				continue;
 			}
 
@@ -516,8 +526,14 @@ int readParamArgs ( const int argc, char * const argv[], param_el param[] )
 					break;
 				}
 			}
+			
+			paramId++;
+
+			if ( paramId == param[ loopCounter ].nbEl )
+			{ // we read all of objects
+				paramId = -1;
+			}
 		}
-		paramId++;
 		numArg++;
 	}
 
