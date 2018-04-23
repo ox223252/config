@@ -191,20 +191,6 @@ $  ./bin/exec -p4 test test_2 PARAM_2=string_2
     2 - PARAM_2
 ```
 
-
-The last call overwrite the existing values:
-```mermaid
-graph TB
-A((main)) --> B(init)
-B --> C(readConfigFile)
-C --> D{OR}
-D --> E(readConfigArgs)
-D --> F(readParamArgs)
-E --> G(use config)
-F --> G
-G --> Z((return))
-```
-
 Need to be done next: 
 - [x] read files of config
 - [x] read arguments on command lines 
