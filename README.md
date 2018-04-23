@@ -34,6 +34,8 @@ int main ( int argc, char *argv[] )
 	uint8_t param1 = 0;
 	uint8_t param3[ 10 ] = { 0 };
 	char param2[ 256 ] = { 0 };
+	char * param4[ 3 ] = { 0 };
+	char param5[ 3 ][ 256 ] = { 0 };
 
 	uint8_t i = 0;
 
@@ -44,18 +46,33 @@ int main ( int argc, char *argv[] )
 	};
 
 	param_el param[] = { // cmd line args
-		{ "-p1", 1, cT ( uint8_t ), &param1, "first argument" },
-		{ "--param1", 1, cT ( uint8_t ), &param1, "first argument" },
-		{ "-p3", 10, cT ( uint8_t ), &param3, "third argument" },
-		{ "--param3", 10, cT ( uint8_t ), &param3, "third argument" },
-		{ NULL, 0, 0, NULL, NULL }
+		{ 
+			.key = "-p1",
+			.nbEl = 1, 
+			.type = cT ( uint8_t ), 
+			.value = &param1, 
+			.help = "first argument" 
+		},
+		{ 
+			.key = "--param1",
+			.nbEl = 1, 
+			.type = cT ( uint8_t ), 
+			.value = &param1, 
+			.help = "first argument" 
+		},
+		{ "-p2", 1, cT ( str ), &param2, "second argument" },
+		{ "--param2", 1, cT ( str ), &param2, "second argument" },
+		{ "-p3", 10,  cT ( uint8_t ),  &param3,  "third argument" },
+		{ "--param3", 10,  cT ( uint8_t ),  &param3,  "third argument" },
+		{ "-p4", 3,  cT ( str ),  &param4,  "fourth argument" },
+		{ "--param4", 3,  cT ( str ),  &param4,  "fourth argument" },
+		{ NULL }
 	};
 
 	if ( readConfigFile ( "configFilePath", config ) )
 	{
 		// failure case
 	}
-	// use readConfigArgs() or readParamArgs() not the both in the same code
 	else if ( readConfigArgs ( argc, argv, config ) )
 	{
 		// failure case
@@ -71,10 +88,17 @@ int main ( int argc, char *argv[] )
 
 	printf ( "1 - %d\n", param1 );
 	printf ( "2 - %s\n", param2 );
+	printf ( "3 -\n" );
 
 	for ( i = 0; i < 10; i++ )
 	{
-		printf ( "3 - %d - %d\n", i, param3[ i ] );
+		printf ( "    %d - %d\n", i, param3[ i ] );
+	}
+
+	printf ( "4 -\n" );
+	for ( i = 0; i < 3; i++ )
+	{
+		printf ( "    %d - %s\n", i, param4[ i ] );
 	}
 
 	return ( 0 );
@@ -114,7 +138,7 @@ $ ./exec PARAM_2=test
 
 Call example: using **readConfigFile()** and **readParamArgs()**
 ```
-$ .//exec -p1 5 -p3 1 2 3 4 5 6 135 8 9
+$ ./exec -p1 5 -p3 1 2 3 4 5 6 135 8 9
 
 1 - 5
 2 - str
@@ -128,7 +152,45 @@ $ .//exec -p1 5 -p3 1 2 3 4 5 6 135 8 9
 3 - 7 - 8
 3 - 8 - 9
 3 - 9 - 0
+...
 ```
+
+Call example: using **readConfigFile()**, **readConfigArgs** and **readParamArgs()**
+```
+$  ./bin/exec PARAM_2=string_2 -p4 test test_2
+
+1 - 10
+2 - string_2
+...
+4 -
+    0 - test
+    1 - test_2
+    2 - (null)
+```
+
+Be care with paramtters order: 
+```
+$  ./bin/exec PARAM_2=string_2 -p4 test test_2
+1 - 10
+2 - string_2
+...
+4 -
+    0 - test
+    1 - test_2
+    2 - (null)
+```
+is different than:
+```
+$  ./bin/exec -p4 test test_2 PARAM_2=string_2
+1 - 10
+2 - string_2
+...
+4 -
+    0 - test
+    1 - test_2
+    2 - PARAM_2
+```
+
 
 The last call overwrite the existing values:
 ```mermaid
@@ -147,4 +209,5 @@ Need to be done next:
 - [x] read files of config
 - [x] read arguments on command lines 
 - [x] read parameters on command lines 
-- [ ] read command args and parameters 
+- [x] read command args and parameters 
+- [x] use NULL pointer to get argument from command line

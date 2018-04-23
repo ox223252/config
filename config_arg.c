@@ -428,7 +428,14 @@ int readParamArgs ( const int argc, char * const argv[], param_el param[] )
 				}
 				case CONFIG_TYPE_str:
 				{
-					sprintf ( (char *)param[ loopCounter ].value, "%s", argv[ numArg ] );
+					if ( (void **)param[ loopCounter ].value == NULL )
+					{
+						*(char **) param[ loopCounter ].value = (void *)argv[ numArg ];
+					}
+					else
+					{
+						sprintf ( (char *)param[ loopCounter ].value, "%s", argv[ numArg ] );
+					}
 					break;
 				}
 				case CONFIG_TYPE_float32_t:
@@ -505,10 +512,6 @@ int readParamArgs ( const int argc, char * const argv[], param_el param[] )
 					{
 						((char **) param[ loopCounter ].value)[ paramId ] = (void *)argv[ numArg ];
 					}
-					// else
-					// {
-					//	sprintf ( ((char **) param[ loopCounter ].value)[ paramId ], "%s", (char *)argv[ numArg ] );
-					// }
 					break;
 				}
 				case CONFIG_TYPE_float32_t:
