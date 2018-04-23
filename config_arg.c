@@ -379,7 +379,7 @@ int readParamArgs ( const int argc, char * const argv[], param_el param[] )
 
 			if ( param[ loopCounter ].value == NULL )
 			{
-				printf ( "param %s has null pointer\n", param[ loopCounter ].key );
+				printf ( "param %s have null pointer\n", param[ loopCounter ].key );
 				continue;
 			}
 
