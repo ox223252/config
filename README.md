@@ -86,7 +86,7 @@ configFilePath example:
 # param 1
 # default value:
 # PARAM_1=12
-PARAM_1=10
+PARAM_1=6
 
 # param 2
 # default value:
