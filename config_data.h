@@ -73,6 +73,7 @@ typedef struct
 {
         const char *key;                ///< key used in config file
         uint16_t nbEl;                  ///< nb elements
+                                        ///< flag id for a boolean cT(bool), cast to uint8_t
         const CONFIG_TYPE type;         ///< type of value
         void *value;                    ///< pointer on value
         const char *help;               ///< string displayed to help

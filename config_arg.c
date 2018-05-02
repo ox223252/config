@@ -143,6 +143,7 @@ int helpConfigArgs ( const config_el param[] )
 	int loopCounter;
 
 	printf ( "    usage : key=value key2=value2\n" );
+	printf ( "%20s : %s\n", "key", "help or type" );
 
 	for ( loopCounter = 0; param[ loopCounter ].key != NULL; loopCounter++ )
 	{
@@ -227,30 +228,25 @@ int helpParamArgs ( const param_el param[] )
 	int loopCounter;
 
 	printf ( "    usage : key value value2 key2 value3 ...\n" );
-
+	printf ( "%15s :  %s : %s\n", "key", "nb elements", "help or type" );
+	
 	for ( loopCounter = 0; param[ loopCounter ].key != NULL; loopCounter++ )
 	{
+		if ( param[ loopCounter ].type == CONFIG_TYPE_bool )
+		{ // for boolean print only key
+			printf ( "%20s :  0 : ", param[ loopCounter ].key );
+		}
+		else if ( param[ loopCounter ].nbEl )
+		{ // print key and nb elements
+			printf ( "%20s : %2d : ", param[ loopCounter ].key, param[ loopCounter ].nbEl );
+		}
+
 		if ( param[ loopCounter ].help )
-		{
-			if ( param[ loopCounter ].nbEl )
-			{
-					printf ( "%20s : %2d : %s\n", param[ loopCounter ].key, param[ loopCounter ].nbEl, param[ loopCounter ].help );
-			}
-			else
-			{
-					printf ( "%20s : %s\n", param[ loopCounter ].key, param[ loopCounter ].help );
-			}
+		{ // print help if defined
+			printf ( "%s\n", param[ loopCounter ].help );
 		}
 		else
-		{
-			if ( param[ loopCounter ].nbEl )
-			{
-				printf ( "%20s : %2d : ", param[ loopCounter ].key, param[ loopCounter ].nbEl );
-			}
-			else
-			{
-				printf ( "%20s : ", param[ loopCounter ].key );
-			}
+		{ // print type if help not defined
 			switch ( param[ loopCounter ].type )
 			{
 				case CONFIG_TYPE_int8_t:
@@ -346,7 +342,7 @@ int readParamArgs ( const int argc, char * const argv[], param_el param[] )
 					{
 						if ( param[ loopCounter ].value != NULL )
 						{
-							* (uint8_t *) param[ loopCounter ].value = 1;
+							* (uint8_t *) param[ loopCounter ].value |= param[ loopCounter ].nbEl;
 						}
 					}
 					break;
