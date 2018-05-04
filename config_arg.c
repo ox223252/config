@@ -228,17 +228,17 @@ int helpParamArgs ( const param_el param[] )
 	int loopCounter;
 
 	printf ( "    usage : key value value2 key2 value3 ...\n" );
-	printf ( "%15s :  %s : %s\n", "key", "nb elements", "help or type" );
+	printf ( "%15s : %3s :  %s : %s\n", "key", "key", "nb elements", "help or type" );
 	
-	for ( loopCounter = 0; param[ loopCounter ].key != NULL; loopCounter++ )
+	for ( loopCounter = 0; ( param[ loopCounter ].keyLong != NULL ) || ( param[ loopCounter ].keyShort != NULL ); loopCounter++ )
 	{
 		if ( param[ loopCounter ].type == CONFIG_TYPE_bool )
 		{ // for boolean print only key
-			printf ( "%20s :  0 : ", param[ loopCounter ].key );
+			printf ( "%15s : %3s : bool : ", param[ loopCounter ].keyLong, param[ loopCounter ].keyShort );
 		}
 		else if ( param[ loopCounter ].nbEl )
 		{ // print key and nb elements
-			printf ( "%20s : %2d : ", param[ loopCounter ].key, param[ loopCounter ].nbEl );
+			printf ( "%15s : %3s : %4d : ", param[ loopCounter ].keyLong, param[ loopCounter ].keyShort, param[ loopCounter ].nbEl );
 		}
 
 		if ( param[ loopCounter ].help )
@@ -333,9 +333,12 @@ int readParamArgs ( const int argc, char * const argv[], param_el param[] )
 		if ( argv[ numArg ][ 0 ] == '-' )
 		{ // maybe it is a key
 			lastCounter = loopCounter;
-			for ( loopCounter = 0; param[ loopCounter ].key != NULL; loopCounter++ )
+			for ( loopCounter = 0; ( param[ loopCounter ].keyLong != NULL ) || ( param[ loopCounter ].keyShort != NULL ); loopCounter++ )
 			{ // verify exiting key
-				if ( !strcmp ( argv[ numArg ], param[ loopCounter ].key ) )
+				if ( ( param[ loopCounter ].keyLong != NULL ) &&
+					!strcmp ( argv[ numArg ], param[ loopCounter ].keyLong ) ||
+					( param[ loopCounter ].keyShort != NULL ) &&
+					!strcmp ( argv[ numArg ], param[ loopCounter ].keyShort ) )
 				{ // key vaild
 					paramId = 0;
 					if ( param[ loopCounter ].type == CONFIG_TYPE_bool )
@@ -349,7 +352,8 @@ int readParamArgs ( const int argc, char * const argv[], param_el param[] )
 				}
 			}
 
-			if ( param[ loopCounter ].key == NULL )
+			if ( ( param[ loopCounter ].keyLong == NULL ) &&
+				( param[ loopCounter ].keyShort == NULL ) )
 			{ // invalid key
 				loopCounter = lastCounter;
 

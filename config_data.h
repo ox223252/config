@@ -71,7 +71,8 @@ typedef struct
 ////////////////////////////////////////////////////////////////////////////////
 typedef struct
 {
-        const char *key;                ///< key used in config file
+        const char *keyLong;            ///< key used in config file
+        const char *keyShort;           ///< key used in config file
         uint16_t nbEl;                  ///< nb elements
                                         ///< flag id for a boolean cT(bool), cast to uint8_t
         const CONFIG_TYPE type;         ///< type of value
