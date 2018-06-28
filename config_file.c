@@ -124,11 +124,13 @@ int readConfigFile ( const char * file, const config_el param[] )
 						sprintf ( (char *)param[ loopCounter ].value, "%s", &key[ index + 1 ] );
 						break;
 					}
+					case CONFIG_TYPE_float:
 					case CONFIG_TYPE_float32_t:
 					{
 						*( float* )( param[ loopCounter ].value ) = ( float ) atof ( &key[ index + 1 ] );
 						break;
 					}
+					case CONFIG_TYPE_double:
 					case CONFIG_TYPE_float64_t:
 					{
 						*( double* )( param[ loopCounter ].value ) = atof ( &key[ index + 1 ] );
@@ -229,11 +231,13 @@ void writeConfigFileDescriptor ( FILE * f, const config_el param[] )
 				fprintf ( f, "%s=%s\n", param[ loopCounter ].key, (char *)( param[ loopCounter ].value ) );
 				break;
 			}
+			case CONFIG_TYPE_float:
 			case CONFIG_TYPE_float32_t:
 			{
 				fprintf ( f, "%s=%f\n", param[ loopCounter ].key, *( float* )( param[ loopCounter ].value ) );
 				break;
 			}
+			case CONFIG_TYPE_double:
 			case CONFIG_TYPE_float64_t:
 			{
 				fprintf ( f, "%s=%lf\n", param[ loopCounter ].key, *( double* )( param[ loopCounter ].value ) );
@@ -336,11 +340,13 @@ int updateConfigFile ( const char * file, const config_el param[] )
 						fprintf ( f2, "%s=%s\n", param[ loopCounter ].key, ( char* )( param[ loopCounter ].value ) );
 						break;
 					}
+					case CONFIG_TYPE_float:
 					case CONFIG_TYPE_float32_t:
 					{
 						fprintf ( f2, "%s=%f\n", param[ loopCounter ].key, *( float* )( param[ loopCounter ].value ) );
 						break;
 					}
+					case CONFIG_TYPE_double:
 					case CONFIG_TYPE_float64_t:
 					{
 						fprintf ( f2, "%s=%lf\n", param[ loopCounter ].key, *( double* )( param[ loopCounter ].value ) );

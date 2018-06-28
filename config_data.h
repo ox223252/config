@@ -50,7 +50,9 @@ typedef enum
         CONFIG_TYPE_int64_t,    ///< int64_t
         CONFIG_TYPE_str,        ///< char *
         CONFIG_TYPE_float32_t,  ///< float
-        CONFIG_TYPE_float64_t   ///< double
+        CONFIG_TYPE_float,      ///< float
+        CONFIG_TYPE_float64_t,  ///< double
+        CONFIG_TYPE_double      ///< double
 }CONFIG_TYPE;
 
 ////////////////////////////////////////////////////////////////////////////////

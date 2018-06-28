@@ -113,11 +113,13 @@ int readConfigArgs ( const int argc,  char * const argv[], config_el param[] )
 						}
 						break;
 					}
+					case CONFIG_TYPE_float:
 					case CONFIG_TYPE_float32_t:
 					{
 						*( float* )( param[ loopCounter ].value ) = ( float ) atof ( &argv[ numArg ][ index + 1 ] );
 						break;
 					}
+					case CONFIG_TYPE_double:
 					case CONFIG_TYPE_float64_t:
 					{
 						*( double* )( param[ loopCounter ].value ) = atof ( &argv[ numArg ][ index + 1 ] );
@@ -202,11 +204,13 @@ int helpConfigArgs ( const config_el param[] )
 					printf ( "string\n" );
 					break;
 				}
+				case CONFIG_TYPE_float:
 				case CONFIG_TYPE_float32_t:
 				{
 					printf ( "float\n" );
 					break;
 				}
+				case CONFIG_TYPE_double:
 				case CONFIG_TYPE_float64_t:
 				{
 					printf ( "double\n" );
@@ -294,11 +298,13 @@ int helpParamArgs ( const param_el param[] )
 					printf ( "string" );
 					break;
 				}
+				case CONFIG_TYPE_float:
 				case CONFIG_TYPE_float32_t:
 				{
 					printf ( "float" );
 					break;
 				}
+				case CONFIG_TYPE_double:
 				case CONFIG_TYPE_float64_t:
 				{
 					printf ( "double" );
@@ -444,11 +450,13 @@ int readParamArgs ( const int argc, char * const argv[], param_el param[] )
 					}
 					break;
 				}
+				case CONFIG_TYPE_float:
 				case CONFIG_TYPE_float32_t:
 				{
 					*(float *)param[ loopCounter ].value = ( float ) atof ( argv[ numArg ] );
 					break;
 				}
+				case CONFIG_TYPE_double:
 				case CONFIG_TYPE_float64_t:
 				{
 					*(double *)param[ loopCounter ].value = atof ( argv[ numArg ] );
