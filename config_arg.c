@@ -56,6 +56,11 @@ int readConfigArgs ( const int argc,  char * const argv[], config_el param[] )
 
 		for ( loopCounter = 0; param[ loopCounter ].key != NULL; loopCounter++ )
 		{
+			if ( !param[ loopCounter ].value )
+			{ // in case of a null value pointer
+				continue;
+			}
+			
 			if ( !strcmp ( argv[ numArg ], param[ loopCounter ].key ) )
 			{
 				switch( param[ loopCounter ].type )
