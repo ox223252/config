@@ -47,25 +47,16 @@ int main ( int argc, char *argv[] )
 
 	param_el param[] = { // cmd line args
 		{
-			.key = "-p1",
+			.keyLong = "--param1",
+			.keyShort = "-p1",
 			.nbEl = 1,
 			.type = cT ( uint8_t ),
 			.value = &param1,
 			.help = "first argument"
 		},
-		{
-			.key = "--param1",
-			.nbEl = 1,
-			.type = cT ( uint8_t ),
-			.value = &param1,
-			.help = "first argument"
-		},
-		{ "-p2", 1, cT ( str ), &param2, "second argument" },
-		{ "--param2", 1, cT ( str ), &param2, "second argument" },
-		{ "-p3", 10,  cT ( uint8_t ),  &param3,  "third argument" },
-		{ "--param3", 10,  cT ( uint8_t ),  &param3,  "third argument" },
-		{ "-p4", 3,  cT ( str ),  &param4, NULL },
-		{ "--param4", 3,  cT ( str ),  &param4,  NULL },
+		{ "--param2", "-p2", 1, cT ( str ), &param2, "second argument" },
+		{ "--param3", "-p3", 10,  cT ( uint8_t ),  &param3,  "third argument" },
+		{ "--param4", "-p4", 3,  cT ( str ),  &param4,  NULL },
 		{ NULL }
 	};
 
@@ -199,14 +190,14 @@ You can change the default comportement by redefining "`--`" argument, two modes
 param_el param[] = { // cmd line args
 		...
 		{ // first case
-			.key = "`--`",
+			.keyLong = "`--`",
 			.nbEl = 1,
 			.type = cT ( uint8_t ),
 			.value = &paramValue,
 			.help = "help data"
 		},
 		{ //second case
-			.key = "`--`",
+			.keyLong = "`--`",
 			.value = NULL,
 			.help = "stop parsing"
 		},
@@ -237,6 +228,98 @@ $ ./exec PARAM_2=string_2 -p1 5 -p3 1 2 3 -- 4 5 6 135 8 9 -p4 test test_2
     2 - (null)
 ```
 
+### booleans:
+#### simplest:
+You can use boolean in your cmd prams for exemple:
+```C
+struct
+{
+	uitn8_t f1:1,
+		f2:1,
+		f3:1;
+}
+flags = { 0 };
+
+...
+
+param_el param[] = {
+	{ "--flag1", "-f1", 0x01, cT ( bool ), &flags, "help data" },
+	{ "--flag2", "-f2", 0x02, cT ( bool ), &flags, "help data" },
+	{ "--flag3", "-f3", 0x04, cT ( bool ), &flags, "help data" },
+	{ NULL, NULL, 0, 0, NULL, NULL },
+}
+
+```
+
+```Shell
+./exec -f1 --flag2
+```
+The last cmd will set the `flags.f1` and `flags.f2` to true ( 1 ).
+
+#### combineted:
+The third parameter is no the bit ID but a bit mask soo:
+You can use boolean in your cmd prams for exemple:
+```C
+struct
+{
+	uitn8_t f1:1,
+		f2:1,
+		f3:1;
+}
+flags = { 0 };
+
+...
+
+param_el param[] = {
+	{ "--flag1", "-f1", 0x01, cT ( bool ), &flags, "help data" },
+	{ "--flag2", "-f2", 0x02, cT ( bool ), &flags, "help data" },
+	{ "--flag3", "-f3", 0x04, cT ( bool ), &flags, "help data" },
+	{ "--flag1_3", "-f13", 0x05, cT ( bool ), &flags, "help data" },
+	{ NULL, NULL, 0, 0, NULL, NULL },
+}
+```
+
+```Shell
+./exec -f13
+```
+This cmd is equivalent too:
+
+```Shell
+./exec -f1 -f3
+```
+
+The lasts cmds will set the `flags.f1` and `flags.f3` to true ( 1 ).
+
+#### more:
+If you whant to use more flags in the same struct it's possible but a litle trick is needed.
+```C
+struct
+{
+	uitn8_t f1:1,
+		f2:1,
+		...;
+	uint8_t f9:1,
+		f0:1;
+	uint8_t f17:1;
+}
+flags = { 0 };
+
+...
+
+param_el param[] = {
+	{ "--flag1", "-f1", 0x01, cT ( bool ), &flags, "help data" },
+	{ "--flag2", "-f2", 0x02, cT ( bool ), &flags, "help data" },
+	...
+	{ "--flag9", "-f9", 0x01, cT ( bool ), ((uint8_t * )&flags) + 1, "help data" },
+	{ "--flag10", "-f10", 0x02, cT ( bool ), ((uint8_t * )&flags) + 1, "help data" },
+	{ "--flag17", "-f17", 0x01, cT ( bool ), ((uint8_t * )&flags) + 2, "help data" },
+	{ NULL, NULL, 0, 0, NULL, NULL },
+}
+```
+
+you should cast flags pointer as int8_t pointer and add an offset.
+
+
 ### Help
 The helps functions will display:
 - for config ( *helpConfigArgs(config)* ):
@@ -263,15 +346,12 @@ helpParamArgs ( param );
 
 ```
     usage : key value value2 key2 value3 ...
-                 -p1 :  1 : first argument
-            --param1 :  1 : first argument
-                 -p2 :  1 : second argument
-            --param2 :  1 : second argument
-                 -p3 : 10 : third argument
-            --param3 : 10 : third argument
-                 -p4 :  3 : string
-            --param4 :  3 : string
-                  -- : stop parsing
+            key : key :  nb elements : help or type
+       --param1 : -p1 :  1 : first argument
+       --param2 : -p2 :  1 : second argument
+       --param3 : -p3 : 10 : third argument
+       --param4 : -p4 :  3 : string
+         	 -- : stop parsing
 ```
 
 Need to be done next:
