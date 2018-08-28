@@ -1,0 +1,48 @@
+@ after INIT_VAR
+struct
+{
+	#ifdef __LOG_H__
+	uint8_t help:1,
+		quiet:1,
+		color:1,
+		debug:1;
+	#else
+	uint8_t help:1,
+		unused:3; // to have same allignement with and without debug/color/quiet flags
+	#endif
+}flags;
+
+@ before INIT_CORE
+config_el config[] =
+{
+	{ NULL }
+};
+
+param_el param[] =
+{
+	{ "--help", "-h", 0x01, cT ( bool ), &flags, "help" },
+	#ifdef __LOG_H__
+	{ "--quiet", "-q", 0x02, cT ( bool ), &flags, "quiet" },
+	{ "--color", "-c", 0x0c, cT ( bool ), &flags, "color" },
+	{ "--debug", "-d", 0x08, cT ( bool ), &flags, "debug" },
+	#endif
+	{ NULL }
+};
+
+@ after INIT_CORE
+// INIT_CONFIG
+if ( readConfigFile ( "configFilePath", config ) )
+{ // failure case
+}
+else if ( readConfigArgs ( argc, argv, config ) )
+{ // failure case
+}
+else if ( readParamArgs ( argc, argv, param ) )
+{ // failure case
+}
+else
+{// configFile read successfully
+	helpParamArgs ( param );
+	helpConfigArgs ( config );
+}
+// END_CONFIG
