@@ -34,9 +34,9 @@ int readConfigFile ( const char * file, const config_el param[] )
 	f = fopen ( file, "r" );
 
 	#pragma GCC diagnostic ignored "-Wpointer-to-int-cast"
-	if ( ( int ) f <= 0 )
+	if ( !f )
 	{
-		return ( -1 );
+		return ( __LINE__ );
 	}
 	#pragma GCC diagnostic pop
 
@@ -153,7 +153,7 @@ int readConfigFile ( const char * file, const config_el param[] )
 
 	if ( fclose ( f ) )
 	{
-		return ( -2 );
+		return ( __LINE__ );
 	}
 
 	return ( 0 );
@@ -166,17 +166,17 @@ int writeConfigFile ( const char * file, const config_el param[] )
 	f = fopen ( file, "r" );
 	
 	#pragma GCC diagnostic ignored "-Wpointer-to-int-cast"
-	if ( ( int )f <= 0 )
+	if ( !f )
 	{
-		return ( -1 );
+		return ( __LINE__ );
 	}
 	#pragma GCC diagnostic pop
 
-	 writeConfigFileDescriptor ( f, param );
+	writeConfigFileDescriptor ( f, param );
 
 	if ( fclose ( f ) )
 	{
-		return ( -2 );
+		return ( __LINE__ );
 	}
 
 	return ( 0 );
@@ -268,18 +268,18 @@ int updateConfigFile ( const char * file, const config_el param[] )
 	f2 = fopen ( "/tmp/config_file.tmp", "w" );
 
 	#pragma GCC diagnostic ignored "-Wpointer-to-int-cast"
-	if ( ( int ) f <= 0 )
+	if ( !f )
 	{
-		return ( -1 );
+		return ( __LINE__ );
 	}
 
-	if ( ( int ) f2 <= 0 )
+	if ( !f2 )
 	{
 		if ( fclose ( f ) )
 		{
-			return ( -2 );
+			return ( __LINE__ );
 		}
-		return ( -3 );
+		return ( __LINE__ );
 	}
 	#pragma GCC diagnostic pop
 
@@ -372,30 +372,28 @@ int updateConfigFile ( const char * file, const config_el param[] )
 		}
 	}
 
-
-
 	if ( fclose ( f ) )
 	{
 		if ( fclose ( f2 ) )
 		{
-			return ( -4 );
+			return ( __LINE__ );
 		}
-		return ( -2 );
+		return ( __LINE__ );
 	}
 
 	if ( fclose ( f2 ) )
 	{
-		return ( -4 );
+		return ( __LINE__ );
 	}
 
 	if ( remove ( file ) )
 	{
-		return ( -5 );
+		return ( __LINE__ );
 	}
 
 	if ( rename ( "/tmp/config_file.tmp", file ) )
 	{
-		return ( -6 );
+		return ( __LINE__ );
 	}
 
 	return ( 0 );

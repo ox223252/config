@@ -25,7 +25,7 @@
 /// \author ox223252
 /// \date 2017-07
 /// \copyright GPLv2
-/// \version 0.1
+/// \version 0.2
 /// \warning NONE
 /// \bug NONE
 ////////////////////////////////////////////////////////////////////////////////
@@ -40,9 +40,7 @@
 /// \param[ out ] param: strut that will contain read data
 /// \brief this one will parse file which contain config and store it in
 ///     internal struct
-/// \return 0: OK
-/// 		-1: open failed
-/// 		-2: close failed
+/// \return if 0 OK then see errno for maore details
 ////////////////////////////////////////////////////////////////////////////////
 int readConfigFile ( const char * file, const config_el param[] );
 
@@ -51,7 +49,7 @@ int readConfigFile ( const char * file, const config_el param[] );
 /// \param[ in ] file: file name that will contain data
 /// \param[ out ] param: strut that will contain read data
 /// \brief this one will write config stored in memory in a file
-/// \return 0: OK
+/// \return if 0 OK then see errno for maore details
 ////////////////////////////////////////////////////////////////////////////////
 int writeConfigFile ( const char * file, const config_el param[] );
 
@@ -68,6 +66,7 @@ void writeConfigFileDescriptor ( FILE * f, const config_el param[] );
 /// \param[ in ] file: file name that will be updated
 /// \param[ out ] param: strut that will contain read data
 /// \brief this one will write config stored in memory in a file
+/// \return if 0 OK then see errno for maore details
 ////////////////////////////////////////////////////////////////////////////////
 int updateConfigFile ( const char * file, const config_el param[] );
 
