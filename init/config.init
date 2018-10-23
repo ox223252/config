@@ -5,12 +5,15 @@
 		uint8_t help:1,
 			quiet:1,
 			color:1,
-			debug:1;
+			debug:1,
+			term:1,
+			file:1;
 		#else
 		uint8_t help:1,
-			unused:3; // to have same allignement with and without debug/color/quiet flags
+			unused:5; // to have same allignement with and without debug/color/quiet flags
 		#endif
 	}flags;
+	char logFileName[ 512 ] = "";
 
 @ before INIT_CORE
 	config_el config[] =
@@ -25,6 +28,9 @@
 		{ "--quiet", "-q", 0x02, cT ( bool ), &flags, "quiet" },
 		{ "--color", "-c", 0x0c, cT ( bool ), &flags, "color" },
 		{ "--debug", "-d", 0x08, cT ( bool ), &flags, "debug" },
+		{ "--term", "-lT", 0x10, cT ( bool ), &flags, "log on term" },
+		{ "--file", "-lF", 0x20, cT ( bool ), &flags, "log in file" },
+		{ "--logFileName", "-lFN", 1, cT ( str ), logFileName, "log file name" },
 		#endif
 		{ NULL }
 	};
