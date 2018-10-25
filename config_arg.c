@@ -443,16 +443,14 @@ int readParamArgs ( const int argc, char * const argv[], param_el param[] )
 					*( int64_t* )( param[ loopCounter ].value ) = atol ( argv[ numArg ] );
 					break;
 				}
+				case CONFIG_TYPE_ptrStr:
+				{
+					*(char **) param[ loopCounter ].value = (void *)argv[ numArg ];
+					break;
+				}
 				case CONFIG_TYPE_str:
 				{
-					if ( (void **)param[ loopCounter ].value == NULL )
-					{
-						*(char **) param[ loopCounter ].value = (void *)argv[ numArg ];
-					}
-					else
-					{
-						sprintf ( (char *)param[ loopCounter ].value, "%s", argv[ numArg ] );
-					}
+					sprintf ( (char *)param[ loopCounter ].value, "%s", argv[ numArg ] );
 					break;
 				}
 				case CONFIG_TYPE_float:
@@ -473,7 +471,7 @@ int readParamArgs ( const int argc, char * const argv[], param_el param[] )
 				}
 			}
 		}
-		else if ( paramId <  param[ loopCounter ].nbEl )
+		else if ( paramId < param[ loopCounter ].nbEl )
 		{
 			if ( param[ loopCounter ].value == NULL )
 			{ // should never be occure
@@ -524,12 +522,14 @@ int readParamArgs ( const int argc, char * const argv[], param_el param[] )
 					(( int64_t* ) param[ loopCounter ].value)[ paramId ] = atol ( argv[ numArg ] );
 					break;
 				}
+				case CONFIG_TYPE_ptrStr:
+				{
+					((char **) param[ loopCounter ].value)[ paramId ] = (void *)argv[ numArg ];
+					break;
+				}
 				case CONFIG_TYPE_str:
 				{
-					if ( ((void **)param[ loopCounter ].value)[ paramId ] == NULL )
-					{
-						((char **) param[ loopCounter ].value)[ paramId ] = (void *)argv[ numArg ];
-					}
+					sprintf ( ((char **) param[ loopCounter ].value)[ paramId ], "%s", argv[ numArg ] );
 					break;
 				}
 				case CONFIG_TYPE_float32_t:

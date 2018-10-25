@@ -48,7 +48,8 @@ typedef enum
         CONFIG_TYPE_int16_t,    ///< int16_t
         CONFIG_TYPE_int32_t,    ///< int32_t
         CONFIG_TYPE_int64_t,    ///< int64_t
-        CONFIG_TYPE_str,        ///< char *
+        CONFIG_TYPE_str,        ///< char []
+        CONFIG_TYPE_ptrStr,     ///< char *
         CONFIG_TYPE_float32_t,  ///< float
         CONFIG_TYPE_float,      ///< float
         CONFIG_TYPE_float64_t,  ///< double
