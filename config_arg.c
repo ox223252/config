@@ -346,10 +346,10 @@ int readParamArgs ( const int argc, char * const argv[], param_el param[] )
 			lastCounter = loopCounter;
 			for ( loopCounter = 0; ( param[ loopCounter ].keyLong != NULL ) || ( param[ loopCounter ].keyShort != NULL ); loopCounter++ )
 			{ // verify exiting key
-				if ( ( param[ loopCounter ].keyLong != NULL ) &&
-					!strcmp ( argv[ numArg ], param[ loopCounter ].keyLong ) ||
-					( param[ loopCounter ].keyShort != NULL ) &&
-					!strcmp ( argv[ numArg ], param[ loopCounter ].keyShort ) )
+				if ( ( ( param[ loopCounter ].keyLong != NULL ) &&
+					!strcmp ( argv[ numArg ], param[ loopCounter ].keyLong ) ) ||
+					( ( param[ loopCounter ].keyShort != NULL ) &&
+					!strcmp ( argv[ numArg ], param[ loopCounter ].keyShort ) ) )
 				{ // key vaild
 					paramId = 0;
 					if ( param[ loopCounter ].type == CONFIG_TYPE_bool )
