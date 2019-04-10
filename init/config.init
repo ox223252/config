@@ -4,13 +4,14 @@
 		#ifdef __LOG_H__
 		uint8_t help:1,
 			quiet:1,
+			verbose:1,
 			color:1,
 			debug:1,
 			term:1,
 			file:1;
 		#else
 		uint8_t help:1,
-			unused:5; // to have same allignement with and without debug/color/quiet flags
+			unused:6; // to have same allignement with and without debug/color/quiet flags
 		#endif
 	}flags;
 	char logFileName[ 512 ] = "";
@@ -26,10 +27,11 @@
 		{ "--help", "-h", 0x01, cT ( bool ), &flags, "help" },
 		#ifdef __LOG_H__
 		{ "--quiet", "-q", 0x02, cT ( bool ), &flags, "quiet" },
-		{ "--color", "-c", 0x0c, cT ( bool ), &flags, "color" },
-		{ "--debug", "-d", 0x08, cT ( bool ), &flags, "debug" },
-		{ "--term", "-lT", 0x10, cT ( bool ), &flags, "log on term" },
-		{ "--file", "-lF", 0x20, cT ( bool ), &flags, "log in file" },
+		{ "--verbose", "-v", 0x04, cT ( bool ), &flags, "verbose" },
+		{ "--color", "-c", 0x08, cT ( bool ), &flags, "color" },
+		{ "--debug", "-d", 0x10, cT ( bool ), &flags, "debug" },
+		{ "--term", "-lT", 0x20, cT ( bool ), &flags, "log on term" },
+		{ "--file", "-lF", 0x40, cT ( bool ), &flags, "log in file" },
 		{ "--logFileName", "-lFN", 1, cT ( str ), logFileName, "log file name" },
 		#endif
 		{ NULL }
