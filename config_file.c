@@ -83,7 +83,25 @@ int readConfigFile ( const char * file, const config_el param[] )
 			{
 				switch( param[ loopCounter ].type )
 				{
+					case CONFIG_TYPE_ibool:
 					case CONFIG_TYPE_bool:
+					{
+						if ( !strcmp ( "true", &key[ index + 1 ] ) ||
+							!strcmp ( "TRUE", &key[ index + 1 ] ) )
+						{
+							*( uint8_t* )( param[ loopCounter ].value ) = 1;							
+						}
+						else if ( !strcmp ( "false", &key[ index + 1 ] ) ||
+							!strcmp ( "FALSE", &key[ index + 1 ] ) )
+						{
+							*( uint8_t* )( param[ loopCounter ].value ) = 0;
+						}
+						else
+						{
+							*( uint8_t* )( param[ loopCounter ].value ) = (uint8_t)atol ( &key[ index + 1 ] ) != 0;
+						}
+						break;
+					}
 					case CONFIG_TYPE_uint8_t:
 					{
 						*( uint8_t* )( param[ loopCounter ].value ) = (uint8_t)atol ( &key[ index + 1 ] );
@@ -191,6 +209,7 @@ void writeConfigFileDescriptor ( FILE * f, const config_el param[] )
 		switch( param[ loopCounter ].type )
 		{
 			case CONFIG_TYPE_bool:
+			case CONFIG_TYPE_ibool:
 			case CONFIG_TYPE_uint8_t:
 			{
 				fprintf ( f, "%s=%" PRIu8 "\n", param[ loopCounter ].key, *( uint8_t* )( param[ loopCounter ].value ) );
@@ -324,6 +343,7 @@ int updateConfigFile ( const char * file, const config_el param[] )
 				switch( param[ loopCounter ].type )
 				{
 					case CONFIG_TYPE_bool:
+					case CONFIG_TYPE_ibool:
 					case CONFIG_TYPE_uint8_t:
 					case CONFIG_TYPE_uint16_t:
 					case CONFIG_TYPE_uint32_t:

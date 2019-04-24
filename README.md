@@ -133,8 +133,15 @@ $ ./exec PARAM_2=string_2 -p1 5 -p3 1 2 3 4 5 6 135 8 9 -p4 test test_2
 ```
 
 ## Advanced
-### Parameter order:
-Be care with paramtters order:
+Be care we used two types of elements name `params args` and `configs args`, the fists ones defines element began by '-' separated by spaces, the seconds ones defines elements separates by '=':
+
+```
+params arguments : -key value -key value -key --longKey ...
+configs arguments : KEY=value KEY=VALUE ...
+```
+
+### arguments order:
+Be care with arguments order:
 ```
 $  ./bin/exec PARAM_2=string_2 -p4 test test_2
 1 - 10
@@ -230,7 +237,7 @@ $ ./exec PARAM_2=string_2 -p1 5 -p3 1 2 3 -- 4 5 6 135 8 9 -p4 test test_2
 
 ### booleans:
 #### simplest:
-You can use boolean in your cmd prams for exemple:
+You can use boolean in your cmd params for exemple:
 ```C
 struct
 {
@@ -288,7 +295,29 @@ This cmd is equivalent too:
 ./exec -f1 -f3
 ```
 
-The lasts cmds will set the `flags.f1` and `flags.f3` to true ( 1 ).
+The last cmds will set the `flags.f1` and `flags.f3` to true ( 1 ).
+
+#### inverted:
+You can use the special type ibool to define an inverted flag, you should set it to true by default and reset it by cmd line. This type is only working with param els, not with config.
+
+```C
+flags = 0xff;
+param_el param[] = {
+	...
+	{ "--flag6", "-f6", 0x20, cT ( ibool ), &flags, "inverted flag" },
+	...
+}
+printf ( "-> %#x\n", flags );
+```
+
+```Shell
+> gcc main.c && ./a.out
+-> 0xdf
+```
+#### TRUE/FALSE:
+For the config's boolean's els (only), you can use int values 0/1 or true/TRUE/false/FALSE:
+
+./a.out PARAM=TRUE
 
 #### more:
 If you whant to use more flags in the same struct it's possible but a litle trick is needed.
@@ -354,9 +383,3 @@ helpParamArgs ( param );
          	 -- : stop parsing
 ```
 
-Need to be done next:
-- [x] read files of config
-- [x] read arguments on command lines
-- [x] read parameters on command lines
-- [x] read command args and parameters
-- [x] use NULL pointer to get argument from command line

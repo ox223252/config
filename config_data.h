@@ -24,7 +24,7 @@
 /// \author ox223252
 /// \date 2017-07
 /// \copyright GPLv2
-/// \version 0.1
+/// \version 0.2
 /// \warning NONE
 /// \bug NONE
 ////////////////////////////////////////////////////////////////////////////////
@@ -40,6 +40,9 @@
 typedef enum
 {
         CONFIG_TYPE_bool,       ///< boolean
+        CONFIG_TYPE_ibool,      ///< inverted boolean, usable to set default
+                // value of flag active and reset it using CMD line arg. In
+                // other case it'll work like boolean
         CONFIG_TYPE_uint8_t,    ///< uint8_t
         CONFIG_TYPE_uint16_t,   ///< uint16_t
         CONFIG_TYPE_uint32_t,   ///< uint32_t
@@ -58,7 +61,8 @@ typedef enum
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \typedef config_el
-/// \brief use to specify what parameter, what type, and where the will be stored
+/// \brief use to specify what parameter, what type, and where the will be
+///     stored
 ////////////////////////////////////////////////////////////////////////////////
 typedef struct
 {
@@ -70,7 +74,8 @@ typedef struct
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \typedef param_el
-/// \brief use to specify what parameter, what type, and where the will be stored
+/// \brief use to specify what parameter, what type, and where the will be
+///     stored
 ////////////////////////////////////////////////////////////////////////////////
 typedef struct
 {

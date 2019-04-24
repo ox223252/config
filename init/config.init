@@ -13,7 +13,8 @@
 		uint8_t help:1,
 			unused:6; // to have same allignement with and without debug/color/quiet flags
 		#endif
-	}flags;
+	}
+	flags;
 	char logFileName[ 512 ] = "";
 
 @ before INIT_CORE
@@ -48,7 +49,7 @@
 	else if ( readParamArgs ( argc, argv, param ) )
 	{ // failure case
 	}
-	else
+	else if ( flags.help )
 	{// configFile read successfully
 		helpParamArgs ( param );
 		helpConfigArgs ( config );

@@ -65,7 +65,25 @@ int readConfigArgs ( const int argc,  char * const argv[], config_el param[] )
 			{
 				switch( param[ loopCounter ].type )
 				{
+					case CONFIG_TYPE_ibool:
 					case CONFIG_TYPE_bool:
+					{
+						if ( !strcmp ( "true", &argv[ numArg ][ index + 1 ] ) ||
+							!strcmp ( "TRUE", &argv[ numArg ][ index + 1 ] ) )
+						{
+							*( uint8_t* )( param[ loopCounter ].value ) = 1;							
+						}
+						else if ( !strcmp ( "false", &argv[ numArg ][ index + 1 ] ) ||
+							!strcmp ( "FALSE", &argv[ numArg ][ index + 1 ] ) )
+						{
+							*( uint8_t* )( param[ loopCounter ].value ) = 0;
+						}
+						else
+						{
+							*( uint8_t* )( param[ loopCounter ].value ) = (uint8_t)atol ( &argv[ numArg ][ index + 1 ] ) != 0;
+						}
+						break;
+					}
 					case CONFIG_TYPE_uint8_t:
 					{
 						*( uint8_t* )( param[ loopCounter ].value ) = (uint8_t)atol ( &argv[ numArg ][ index + 1 ] );
@@ -163,7 +181,12 @@ int helpConfigArgs ( const config_el param[] )
 			printf ( "%20s : ", param[ loopCounter ].key );
 			switch ( param[ loopCounter ].type )
 			{
+				case CONFIG_TYPE_ibool:
 				case CONFIG_TYPE_bool:
+				{
+					printf ( "boolean\n" );
+					break;
+				}
 				case CONFIG_TYPE_int8_t:
 				{
 					printf ( "int8_t\n" );
@@ -241,7 +264,8 @@ int helpParamArgs ( const param_el param[] )
 	
 	for ( loopCounter = 0; ( param[ loopCounter ].keyLong != NULL ) || ( param[ loopCounter ].keyShort != NULL ); loopCounter++ )
 	{
-		if ( param[ loopCounter ].type == CONFIG_TYPE_bool )
+		if ( ( param[ loopCounter ].type == CONFIG_TYPE_bool ) ||
+			( param[ loopCounter ].type == CONFIG_TYPE_ibool ) )
 		{ // for boolean print only key
 			printf ( "%15s : %3s : bool : ", param[ loopCounter ].keyLong, param[ loopCounter ].keyShort );
 		}
@@ -320,6 +344,11 @@ int helpParamArgs ( const param_el param[] )
 					printf ( "bool" );
 					break;
 				}
+				case CONFIG_TYPE_ibool:
+				{
+					printf ( "inverted bool" );
+					break;
+				}
 				default:
 				{
 					break;
@@ -357,6 +386,13 @@ int readParamArgs ( const int argc, char * const argv[], param_el param[] )
 						if ( param[ loopCounter ].value != NULL )
 						{
 							* (uint8_t *) param[ loopCounter ].value |= param[ loopCounter ].nbEl;
+						}
+					}
+					else if ( param[ loopCounter ].type == CONFIG_TYPE_ibool )
+					{
+						if ( param[ loopCounter ].value != NULL )
+						{
+							* (uint8_t *) param[ loopCounter ].value &= ~param[ loopCounter ].nbEl;
 						}
 					}
 					break;
@@ -402,7 +438,11 @@ int readParamArgs ( const int argc, char * const argv[], param_el param[] )
 
 			switch( param[ loopCounter ].type )
 			{
+				case CONFIG_TYPE_ibool:
 				case CONFIG_TYPE_bool:
+				{
+					break;
+				}
 				case CONFIG_TYPE_uint8_t:
 				{
 					*( uint8_t* )( param[ loopCounter ].value ) = atol ( argv[ numArg ] );
@@ -481,7 +521,11 @@ int readParamArgs ( const int argc, char * const argv[], param_el param[] )
 
 			switch( param[ loopCounter ].type )
 			{
+				case CONFIG_TYPE_ibool:
 				case CONFIG_TYPE_bool:
+				{
+					break;
+				}
 				case CONFIG_TYPE_uint8_t:
 				{
 					(( uint8_t* ) param[ loopCounter ].value)[ paramId ] = atol ( argv[ numArg ] );
