@@ -44,6 +44,10 @@
 			{ "MCP23017_ADDR", cT ( int32_t ), &mcp23017_addr, "mcp23017 address"},
 			{ "MCP23017_I2C", cT ( str ), mcp23017_i2c, "mcp23017 i2c bus name"},
 		#endif
+		#ifdef __TCPIP_H__
+			{ "TCP_PORT", cT ( uint16_t ), &port, "tcp server port"},
+			{ "TCP_ADDR", cT ( str ), server_addr, "tcp server ip address or server name"},
+		#endif
 		{ NULL }
 	};
 
@@ -68,6 +72,10 @@
 		#ifdef __MCP23017_H__
 			{ "--mcp23017_addr", "-mA", 1, cT ( int32_t ), &mcp23017_addr, "mcp23017 address" },
 			{ "--mcp23017_i2c", "-mI", 1, cT ( str ), mcp23017_i2c, "mcp23017 i2c bus name" },
+		#endif
+		#ifdef __TCPIP_H__
+			{ "--tcp_port", "-tp", 1, cT ( uint16_t ), &port, "tcp server port" },
+			{ "--tcp_addr", "-tA", 1, cT ( str ), server_addr, "tcp server ip address or server name" },
 		#endif
 		{ NULL }
 	};
