@@ -18,7 +18,7 @@
 			unused:6; // to have same allignement with and without debug/color/quiet flags
 		#endif
 	}
-	flags;
+	flags = { 0 };
 	#ifdef __LOG_H__
 		char logFileName[ 512 ] = "";
 	#endif
