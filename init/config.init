@@ -48,6 +48,15 @@
 			{ "TCP_PORT", cT ( uint16_t ), &serverPort, "tcp server port"},
 			{ "TCP_ADDR", cT ( str ), serverAddr, "tcp server ip address or server name"},
 		#endif
+		#ifdef __BIGBOYSERVER_H__
+			{ "MQTT_HOST", cT ( ptrStr ), mqttInitStruct.host, "MQTT broker ip addr" },
+			{ "MQTT_PORT", cT ( uint16_t ), &mqttInitStruct.port, "MQTT broker port" },
+			{ "MQTT_CA", cT ( ptrStr ), mqttInitStruct.ca, "MQTT broker SSL CA file" },
+			{ "MQTT_CERT", cT ( ptrStr ), mqttInitStruct.cert, "MQTT broker SSL CERT file" },
+			{ "MQTT_KEY", cT ( ptrStr ), mqttInitStruct.key, "MQTT broker SSL KEY file" },
+			{ "MQTT_LAST_TOPIC", cT ( ptrStr ), mqttInitStruct.lastName, "MQTT topic used to post last msg on deconnection" },
+			{ "MQTT_LAST_MSG", cT ( ptrStr ), mqttInitStruct.lastMsg, "MQTT msg sent on deconnection" },
+		#endif
 		{ NULL }
 	};
 
@@ -76,6 +85,15 @@
 		#ifdef __TCPIP_H__
 			{ "--tcp_port", "-tp", 1, cT ( uint16_t ), &serverPort, "tcp server port" },
 			{ "--tcp_addr", "-tA", 1, cT ( str ), serverAddr, "tcp server ip address or server name" },
+		#endif
+		#ifdef __BIGBOYSERVER_H__
+			{ "--mqqtt_host", "-mH", 1, cT ( ptrStr ), mqttInitStruct.host, "MQTT broker ip addr" },
+			{ "--mqtt_port", "-mP", 1, cT ( uint16_t ), &mqttInitStruct.port, "MQTT broker port" },
+			{ "--mqtt_ca", "-mA", 1, cT ( ptrStr ), mqttInitStruct.ca, "MQTT broker SSL CA file" },
+			{ "--mqtt_CERT", "-mC", 1, cT ( ptrStr ), mqttInitStruct.cert, "MQTT broker SSL CERT file" },
+			{ "--mqtt_KEY", "-mK", 1, cT ( ptrStr ), mqttInitStruct.key, "MQTT broker SSL KEY file" },
+			{ "--mqtt_topic", "-mT", 1, cT ( ptrStr ), mqttInitStruct.lastName, "MQTT topic used to post last msg on deconnection" },
+			{ "--mqtt_msg", "-mM", 1, cT ( ptrStr ), mqttInitStruct.lastMsg, "MQTT msg sent on deconnection" },
 		#endif
 		{ NULL }
 	};
