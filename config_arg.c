@@ -365,7 +365,7 @@ int readParamArgs ( const int argc, char * const argv[], param_el param[] )
 {
 	int numArg = 1;
 	int loopCounter = 0;
-	int lastCounter = 0;
+	int lastCounter = -1;
 	int paramId = -1;
 
 	while ( numArg < argc )
@@ -420,7 +420,7 @@ int readParamArgs ( const int argc, char * const argv[], param_el param[] )
 			}
 		}
 
-		if ( paramId == -1 )
+		if ( lastCounter == -1 )
 		{ // we haven't already found a key
 			numArg++;
 			continue;
@@ -430,9 +430,10 @@ int readParamArgs ( const int argc, char * const argv[], param_el param[] )
 		{
 			// we only get one param, next we will need to found a new key
 			paramId = -1;
-			
+
 			if ( param[ loopCounter ].value == NULL )
 			{ // should never be occure
+				numArg++;
 				continue;
 			}
 
@@ -516,6 +517,7 @@ int readParamArgs ( const int argc, char * const argv[], param_el param[] )
 			if ( param[ loopCounter ].value == NULL )
 			{ // should never be occure
 				paramId = -1;
+				numArg++;
 				continue;
 			}
 
